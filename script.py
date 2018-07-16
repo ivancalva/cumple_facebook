@@ -7,11 +7,14 @@ import requests
 mensajes = ["Feliz Cumpleaños", "Lindo dia", "Que la pases muy bien", "Etc"]
 
 def revisar_sexo(nombre):
-    res = json.loads(requests.get("https://api.genderize.io/", {'name': nombre.split(' ', 1)[0]}).text)
-    prob = res['probability']
-    if prob < 0.90:
+    try:
+        res = json.loads(requests.get("https://api.genderize.io/", {'name': nombre.split(' ', 1)[0]}).text)
+        prob = res['probability']
+        if prob < 0.90:
+            return 'neutro'
+        return res['gender']
+    except:
         return 'neutro'
-    return res['gender']
 
 try:
     print("Comenzando")
