@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 import json
 import random
 import requests
+import sys
 
 mensajes_neutros = ["Feliz Cumpleaños, espero te lo pases muy bien", "Que estes pasando un feliz cumpleaños!"]
 mensajes_hombre = ["Feliz Cumpleaños"]
@@ -32,9 +33,6 @@ def felicitar_amigos():
             for bday in list_of_bdays:
                 fields = bday.text.split('\n')
                 name = fields[1]
-                #Si es Karen no felicitar.
-                if "Karen" in name:
-                    continue
                 sexo = revisar_sexo(name)
                 if(sexo == 'female'):
                     mensaje = random.choice(mensajes_mujeres)
@@ -45,10 +43,11 @@ def felicitar_amigos():
                 try:
                     text_area = bday.find_element_by_xpath('.//textarea')
                     if text_area is not None:
-                        text_area.send_keys("Feliz Cumpleaños")
+                        text_area.send_keys(mensaje)
                         text_area.send_keys(Keys.ENTER)
                         sent_messages.append(name)
                 except:
+                    print(sys.exc_info()[0])
                     continue
             print("Termino " + str(len(sent_messages)) + " mensajes enviados")
             for name in sent_messages:
