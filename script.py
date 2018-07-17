@@ -4,14 +4,15 @@ import json
 import random
 import requests
 import sys
+import time
 
-mensajes_neutros = ["Feliz Cumpleaños, espero te lo pases muy bien", "Que estes pasando un feliz cumpleaños!"]
-mensajes_hombre = ["Feliz Cumpleaños"]
-mensajes_mujeres = ["Feliz cumpleaños, espero te la pases muy bien!", "Felicidades, que estes pasando un lindo dia!", "Feliz cumpleaños, te mando un abrazo."]
+mensajes_neutros = ["Feliz Cumpleaños {}, espero te lo pases muy bien", "Que estes pasando un feliz cumpleaños {}!"]
+mensajes_hombre = ["Feliz Cumpleaños {}"]
+mensajes_mujeres = ["Feliz cumpleaños {}, espero te la pases muy bien!", "Felicidades {}, que estes pasando un lindo dia!", "Feliz cumpleaños {}, te mando un abrazo."]
 
 def revisar_sexo(nombre):
     try:
-        res = json.loads(requests.get("https://api.genderize.io/", {'name': nombre.split(' ', 1)[0]}).text)
+        res = json.loads(requests.get("https://api.genderize.io/", {'name': nombre}).text)
         prob = res['probability']
         if prob < 0.90:
             return 'neutro'
@@ -32,20 +33,21 @@ def felicitar_amigos():
             sent_messages = []
             for bday in list_of_bdays:
                 fields = bday.text.split('\n')
-                name = fields[1]
+                name = fields[1].split(' ', 1)[0]
                 sexo = revisar_sexo(name)
                 if(sexo == 'female'):
-                    mensaje = random.choice(mensajes_mujeres)
+                    mensaje = random.choice(mensajes_mujeres).format(name)
                 elif(sexo == 'male'):
-                    mensaje = random.choice(mensajes_hombre)
+                    mensaje = random.choice(mensajes_hombre).format(name)
                 else:
-                    mensaje = random.choice(mensajes_neutros)
+                    mensaje = random.choice(mensajes_neutros).format(name)
                 try:
                     text_area = bday.find_element_by_xpath('.//textarea')
                     if text_area is not None:
                         text_area.send_keys(mensaje)
                         text_area.send_keys(Keys.ENTER)
-                        sent_messages.append(name)
+                        time.sleep(1)
+                        sent_messages.append(fields[1])
                 except:
                     print(sys.exc_info()[0])
                     continue
