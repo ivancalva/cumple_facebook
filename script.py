@@ -4,9 +4,9 @@ import json
 import random
 import requests
 
-mensajes_neutros = ["Feliz Cumpleaños", "Lindo dia", "Que la pases muy bien", "Etc"]
+mensajes_neutros = ["Feliz Cumpleaños, espero te lo pases muy bien", "Que estes pasando un feliz cumpleaños!"]
 mensajes_hombre = ["Feliz Cumpleaños"]
-mensajes_mujeres = ["Feliz cumpleaños!"]
+mensajes_mujeres = ["Feliz cumpleaños, espero te la pases muy bien!", "Felicidades, que estes pasando un lindo dia!", "Feliz cumpleaños, te mando un abrazo."]
 
 def revisar_sexo(nombre):
     try:
@@ -32,6 +32,9 @@ def felicitar_amigos():
             for bday in list_of_bdays:
                 fields = bday.text.split('\n')
                 name = fields[1]
+                #Si es Karen no felicitar.
+                if "Karen" in name:
+                    continue
                 sexo = revisar_sexo(name)
                 if(sexo == 'female'):
                     mensaje = random.choice(mensajes_mujeres)
